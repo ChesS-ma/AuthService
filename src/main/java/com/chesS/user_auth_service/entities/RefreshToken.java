@@ -16,6 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "refresh_token")
 public class RefreshToken {
     @Id
     @GeneratedValue

@@ -16,24 +16,47 @@ import java.util.UUID;
 @NoArgsConstructor
 @Table(name = "users")
 public class User  {
+
+    public enum Status {
+        ACTIVE,
+        INACTIVE,
+        SUSPENDED,
+        BANNED,
+        DELETED
+    }
+
+    public enum Provider {
+        LOCAL,
+        GOOGLE,
+        GITHUB,
+        FACEBOOK,
+    }
+
+
     @Id
     @GeneratedValue
     @UuidGenerator
-    @Column(updatable = false ,columnDefinition = "uuid")
+    @Column(updatable = false )
     private UUID id ;
 
+    @Column(unique = true)
     private String email;
 
-    private String password_hash;
+    private String password;
 
-    private boolean is_verified ;
+    private boolean isVerified ;
 
-    private String provider ;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Status status;
 
-    private String status ;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Provider provider;
 
-    @ManyToOne(optional = false) // or Lazy
+    @ManyToOne(fetch = FetchType.LAZY , optional = false ) // or Eager
     @JoinColumn(name = "role_id")
     private Role role ;
 
 }
+

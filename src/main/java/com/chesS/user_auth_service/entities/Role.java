@@ -19,7 +19,7 @@ public class Role {
     @Id
     @GeneratedValue
     @UuidGenerator
-    @Column(updatable = false, columnDefinition = "uuid")
+    @Column(updatable = false)
     private UUID id ;
 
     @Column(unique = true)
