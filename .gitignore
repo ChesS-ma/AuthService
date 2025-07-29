@@ -34,3 +34,8 @@ build/
 target/
 .mvn/
 .idea/
+
+
+
+# Ignore sensitive Spring config
+/src/main/resources/application.properties
