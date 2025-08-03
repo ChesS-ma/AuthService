@@ -19,6 +19,7 @@ public class AuthServiceImpl implements AuthService {
     private final  UserRepository userRepository;
     private final RoleRepository roleRepository;
 
+    @Override
     public User Register(RegisterRequest registerRequest){
 
         if(userRepository.existsByEmail(registerRequest.getEmail())){
@@ -39,6 +40,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
 
+    @Override
     public User Login(LoginRequest loginRequest){
         User user = userRepository.findByEmail(loginRequest.getEmail()).orElseThrow( () -> new RuntimeException(" User not Found!") );
 

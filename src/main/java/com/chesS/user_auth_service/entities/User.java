@@ -44,6 +44,8 @@ public class User  {
 
     private String password;
 
+    private String username ;
+
     private boolean isVerified ;
 
     @Enumerated(EnumType.STRING)
