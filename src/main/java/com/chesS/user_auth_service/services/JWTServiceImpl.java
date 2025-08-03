@@ -2,11 +2,15 @@ package com.chesS.user_auth_service.services;
 
 import com.chesS.user_auth_service.entities.User;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
@@ -67,15 +71,45 @@ public class JWTServiceImpl implements JWTService{
 
     @Override
     public String extractEmail(String token) {
-        return extractClaim(token, Claims::getSubject);
+        try{
+            return extractClaim(token, Claims::getSubject);
+        } catch (Exception e) {
+        throw new IllegalArgumentException("Invalid token or missing Email Subject", e);
+        }
     }
 
+    @Override
+    public String extractUsername(String token) {
+        try{
+            return extractClaim(token , claims -> claims.get("username" , String.class)) ;
+        } catch(Exception e){
+            throw new IllegalArgumentException("Invalid token or missing username claim" , e) ;
+        }
+    }
+
+    @Override
+    public Long extractUserId(String token) {
+        try {
+            return extractClaim(token, claims -> claims.get("userId", Long.class));
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid token or missing userId claim", e);
+        }
+    }
+
+
+
     public Claims extractAllClaims(String token) {
-        return Jwts.parser()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+        try{
+            return Jwts.parser()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (ExpiredJwtException ex) {
+            throw new CredentialsExpiredException("Token expired", ex);
+        } catch (JwtException ex) {
+            throw new BadCredentialsException("Invalid token", ex);
+        }
     }
 
     private <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {

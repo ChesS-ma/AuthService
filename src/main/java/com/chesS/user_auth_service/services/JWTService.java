@@ -12,4 +12,8 @@ public interface JWTService {
      boolean isTokenValid(String token, User user);
 
      public String extractEmail(String token) ;
+
+     public String extractUsername(String token) ;
+
+     public Long extractUserId(String token) ;
 }

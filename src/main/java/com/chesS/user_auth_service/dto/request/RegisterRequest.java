@@ -7,4 +7,5 @@ import lombok.Data;
 public class RegisterRequest {
     public String email ;
     private String password ;
+    private String username ;
 }

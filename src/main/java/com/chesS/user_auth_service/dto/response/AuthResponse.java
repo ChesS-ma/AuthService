@@ -11,7 +11,7 @@ public class AuthResponse {
 
     private String refreshToken ;
 
-    private String tokenType;
+    private String  username;;
 
     private String email ;
 
