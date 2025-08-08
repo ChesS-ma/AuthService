@@ -7,7 +7,7 @@ public interface JWTService {
 
      String generateToken(User user ) ;
 
-     String generateRefreshToken(User user ) ;
+//     String generateRefreshToken(User user ) ;
 
      boolean isTokenValid(String token, User user);
 

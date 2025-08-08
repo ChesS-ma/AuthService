@@ -50,17 +50,17 @@ public class JWTServiceImpl implements JWTService{
                 .compact();
     }
 
-    @Override
-    public String generateRefreshToken(User user) {
-        return Jwts.builder()
-                .subject(user.getEmail())
-                .claim("userId", user.getId())
-                .claim("username", user.getUsername())
-                .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
-                .signWith(key)
-                .compact();
-    }
+//    @Override
+//    public String generateRefreshToken(User user) {
+//        return Jwts.builder()
+//                .subject(user.getEmail())
+//                .claim("userId", user.getId())
+//                .claim("username", user.getUsername())
+//                .issuedAt(new Date(System.currentTimeMillis()))
+//                .expiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
+//                .signWith(key)
+//                .compact();
+//    }
 
 
     @Override

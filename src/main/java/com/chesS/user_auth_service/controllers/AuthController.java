@@ -5,6 +5,7 @@ import com.chesS.user_auth_service.dto.request.RegisterRequest;
 import com.chesS.user_auth_service.dto.response.AuthResponse;
 import com.chesS.user_auth_service.entities.User;
 import com.chesS.user_auth_service.services.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,14 +19,12 @@ public class AuthController {
     private AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<User> register(@RequestBody RegisterRequest request){
-        return ResponseEntity.ok(authService.Register(request));
+    public ResponseEntity<User> register(@RequestBody RegisterRequest request , HttpServletRequest httpRequest ){
+        return ResponseEntity.ok(authService.Register(request , httpRequest));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request){
-        return ResponseEntity.ok(authService.Login(request));
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request , HttpServletRequest httpRequest){
+        return ResponseEntity.ok(authService.Login(request , httpRequest));
     }
-
-
 }
