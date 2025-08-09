@@ -56,7 +56,7 @@ public class User  {
     @Column(nullable = false)
     private Provider provider;
 
-    @ManyToOne(fetch = FetchType.LAZY , optional = false ) // or Eager
+    @ManyToOne(fetch = FetchType.EAGER , optional = false ) // or Eager
     @JoinColumn(name = "role_id")
     private Role role ;
 
