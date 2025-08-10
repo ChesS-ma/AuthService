@@ -8,5 +8,7 @@ public interface PasswordResetService {
     public String createPasswordResetToken(String email , HttpServletRequest request ) ;
 
 
+    public boolean validatePasswordResetToken(String token ) ;
+
     public void resetPassword(String token , String newPassword , HttpServletRequest request ) ;
 }

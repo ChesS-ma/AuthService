@@ -52,12 +52,6 @@ public class PasswordResetServiceImpl implements PasswordResetService{
         return token  ;
     }
 
-    public boolean validatePasswordResetToken(String token ){
-        return passwordResetTokenRepository.findByToken(token)
-                .map(resetToken -> resetToken.getExpiryDate().isAfter(Instant.now()))
-                .orElse(false);
-    }
-
     public User getUserByPasswordResetToken(String token , String  ipAddress) {
         PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(token)
                 .orElseThrow(() -> new RuntimeException("Invalid password reset token"));
@@ -86,5 +80,13 @@ public class PasswordResetServiceImpl implements PasswordResetService{
 
         auditLogService.logAction(user, "PASSWORD_RESET_SECCESS", ipAddress);
 
+    }
+
+    @Override
+    @Transactional
+    public boolean validatePasswordResetToken(String token ){
+        return passwordResetTokenRepository.findByToken(token)
+                .map(resetToken -> resetToken.getExpiryDate().isAfter(Instant.now()))
+                .orElse(false);
     }
 }
