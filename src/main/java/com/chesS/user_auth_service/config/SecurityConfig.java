@@ -1,8 +1,9 @@
 package com.chesS.user_auth_service.config;
 
 import com.chesS.user_auth_service.repositories.UserRepository;
-import com.chesS.user_auth_service.services.CustomUserDetailsService;
 import com.chesS.user_auth_service.services.JWTService;
+import com.chesS.user_auth_service.oauth.CustomOAuth2UserService;
+import com.chesS.user_auth_service.oauth.OAuth2LoginSuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -26,26 +27,34 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JWTService jwtService;
-    private final UserDetailsService userDetailsService ;
+    private final UserDetailsService userDetailsService;
     private final UserRepository userRepository;
 
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> {
-                    auth
-                            .requestMatchers("/api/auth/**").permitAll()
-                            .requestMatchers("/api/audit/**").authenticated()
-                            .anyRequest().authenticated();
-                })
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/api/auth/**",   // your existing auth endpoints
+                                "/oauth2/**",     // OAuth2 authorization start
+                                "/login/**"       // OAuth2 callback
+                        ).permitAll()
+                        .requestMatchers("/api/audit/**").authenticated()
+                        .anyRequest().authenticated()
                 )
+                .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
-                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+                // keep your JWT filter
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                // NEW: enable OAuth2 login
+                .oauth2Login(oauth -> oauth
+                        .userInfoEndpoint(u -> u.userService(customOAuth2UserService))
+                        .successHandler(oAuth2LoginSuccessHandler)
+                );
 
         return http.build();
     }
@@ -58,9 +67,9 @@ public class SecurityConfig {
         return authProvider;
     }
 
-        @Bean
+    @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(jwtService , userDetailsService , userRepository);
+        return new JwtAuthenticationFilter(jwtService, userDetailsService, userRepository);
     }
 
     @Bean

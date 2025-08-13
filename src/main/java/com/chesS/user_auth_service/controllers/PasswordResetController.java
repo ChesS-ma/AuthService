@@ -1,7 +1,6 @@
 package com.chesS.user_auth_service.controllers;
 
 import com.chesS.user_auth_service.dto.request.ResetPasswordRequest;
-import com.chesS.user_auth_service.dto.response.AuthResponse;
 import com.chesS.user_auth_service.dto.response.ErrorResponse;
 import com.chesS.user_auth_service.services.PasswordResetService;
 import jakarta.servlet.http.HttpServletRequest;
